@@ -1,6 +1,6 @@
-# 📦 Listmonk Backup & Cleanup System
+# 📦 Listmonk Backup
 
-Automated backup and cleanup system for your [Listmonk](https://listmonk.app) instance.  
+Automated backup with automatic cleanup (retention) system for your [Listmonk](https://listmonk.app) instance.  
 Built in PHP and designed to run securely **outside the web root**, triggered via `cron`.
 
 ---
