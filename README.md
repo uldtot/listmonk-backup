@@ -1,77 +1,115 @@
-# 📬 listmonk-backup
+# 📦 Listmonk Backup & Cleanup System
 
-A simple PHP library to connect to and interact with the Listmonk API. Ideal for building backups, exports, or integrating Listmonk with external systems.
-
----
-
-## 🧩 Features
-
-- Connect to a Listmonk instance via API  
-- Fetch subscribers  
-- Create new subscribers  
-- Ready to extend (segments, campaigns, lists, etc.)
+Automated backup and cleanup system for your [Listmonk](https://listmonk.app) instance.  
+Built in PHP and designed to run securely **outside the web root**, triggered via `cron`.
 
 ---
 
-## 🚀 Getting Started
+## 🧰 Features
 
-### 1. Installation
-
-Clone the repository or download `ListmonkAPI.php` into your project:
-
-```bash
-git clone https://github.com/your-user/listmonk-backup.git
-```
-
-Or include the file manually:
-
-```php
-require_once 'ListmonkAPI.php';
-```
+- Exports Listmonk data (subscribers, campaigns, templates, etc.) to timestamped folders
+- Sends summary reports via email
+- Retains backups for a configurable number of days
+- Cleans up old backups automatically
+- Configuration via a simple `config.ini` file
+- Runs safely via cronjobs — **not web-accessible**
 
 ---
 
-## ⚙️ Configuration using `config.ini`
+## 📁 Files Overview
 
-Instead of environment variables, this project uses a simple `config.ini` file placed **outside the public web root**, e.g.:
+| File                | Purpose                                                                 |
+|---------------------|-------------------------------------------------------------------------|
+| `ListmonkAPI.php`   | Core logic for exporting and backing up Listmonk data                   |
+| `CleanupBackups.php`| Deletes old backups based on retention setting                          |
+| `config.ini`        | Configuration for backup behavior and email reporting                   |
 
-### Example `config.ini`:
+---
+
+## ⚙️ Configuration
+
+Create a `config.ini` file in the same directory:
 
 ```ini
-LISTMONK_URL=https://your-listmonk-url.com
+# GENERAL SETTINGS
+LISTMONK_URL=https://example.com
 LISTMONK_USER=admin
-LISTMONK_PASS=admin
+LISTMONK_PASS=password
+BACKUP_RETENTION_DAYS=30
+
+# MAIL SETTINGS
+MAIL_TO=log@example.com
+MAIL_FROM=system@example.com
+MAIL_SUBJECT=Listmonk Backup Report
+
+# SMTP SETTINGS
+SMTP_HOST=localhost
+SMTP_USER=system@example.com
+SMTP_PASS=password
+SMTP_PORT=465
 ```
 
-## 🧪 Examples
+> 🔐 **Important:** Store `config.ini` in a secure location with correct permissions (`chmod 600` recommended). Do **not** place this project inside your `www/` or public web root.
 
-### Fetch all subscribers
+---
+
+## ⏱️ Cronjob Setup
+
+Add these lines to your crontab (`crontab -e`) to automate backup and cleanup:
+
+```bash
+# Run backup every night at 2:00 AM
+0 2 * * * /usr/bin/php /path/to/ListmonkBackup.php
+
+# Clean up old backups every night at 3:00 AM
+0 3 * * * /usr/bin/php /path/to/CleanupBackups.php
+```
+
+> ✅ Make sure `/usr/bin/php` points to your correct PHP binary and adjust the path to your script directory.
+
+---
+
+## 🧪 Example Usage
+
+### Backup Script (`ListmonkBackup.php`)
 
 ```php
-$response = $listmonk->getSubscribers();
-print_r($response);
+require_once __DIR__ . '/ListmonkAPI.php';
+$listmonk = new ListmonkAPI();
+$listmonk->runBackup();
 ```
 
-### Create a new subscriber
+### Cleanup Script (`CleanupBackups.php`)
 
 ```php
-$new = $listmonk->createSubscriber([
-    'name'   => 'John Doe',
-    'email'  => 'john@example.com',
-    'status' => 'enabled',
-    'lists'  => [1], // list ID(s)
-]);
+require_once __DIR__ . '/ListmonkAPI.php';
+
+try {
+    $listmonk = new ListmonkAPI();
+    $listmonk->cleanOldBackups();
+} catch (Exception $e) {
+    error_log("Backup cleanup failed: " . $e->getMessage());
+    echo "Error: " . $e->getMessage();
+}
 ```
+
+---
+
+## ✅ Security Best Practices
+
+- Store everything **outside** of public web directories.
+- Protect your `config.ini` with strict permissions.
+- Use encrypted SMTP and strong passwords for mail settings.
+- Restrict cronjob access to authorized users only.
 
 ---
 
 ## 📄 License
 
-MIT License — use and modify freely.
+MIT License — free for personal or commercial use. Contributions welcome!
 
 ---
 
-## ✍️ Contributions
+## 🙋 Need Help?
 
-Pull requests and ideas are welcome!  
-Feel free to open issues for bugs or feature suggestions.
+Open an issue or contact the repository maintainer for support.
