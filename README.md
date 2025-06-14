@@ -78,9 +78,13 @@ Add these lines to your crontab (`crontab -e`) to automate backup and cleanup:
 
 ---
 
-## 📄 License
+## 📖 License
 
-MIT License — free for personal use.
+This project is licensed under the [MIT License](LICENSE). You are free to use, modify, and distribute it – both privately and commercially.
+
+## ☕ Support the Project
+
+If you find it useful and want to support the development, you're very welcome to make a donation – every bit helps 🙏
 
 ---
 
