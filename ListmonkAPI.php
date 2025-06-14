@@ -72,10 +72,15 @@ class ListmonkAPI
      *
      * @throws Exception       If a cURL error occurs during the request.
      */
-    private function request(string $method, string $endpoint, array $data = [])
+    private function request(string $method, string $endpoint, array $queryString = [])
     {
         // Build the full API URL by appending the endpoint to the base URL
-        $url = $this->baseUrl . '/api/' . ltrim($endpoint, '/');
+        $params = "";
+        if($queryString) {
+             $params = http_build_query($queryString);    
+        } 
+        
+        $url = $this->baseUrl . '/api/' . ltrim($endpoint, '').'?'.$params.'';
 
         // Initialize a new cURL session
         $ch = curl_init();
@@ -93,11 +98,6 @@ class ListmonkAPI
             CURLOPT_CUSTOMREQUEST => strtoupper($method), // Use the specified HTTP method
             CURLOPT_HTTPHEADER => $headers,              // Set HTTP headers
         ]);
-
-        // If the method is POST or PUT, attach the JSON-encoded data payload
-        if (in_array(strtoupper($method), ['POST', 'PUT'])) {
-            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-        }
 
         // Execute the request and store the response
         $response = curl_exec($ch);
@@ -537,37 +537,37 @@ class ListmonkAPI
     // Retrieve all mailing lists
     public function getAllLists()
     {
-        return $this->request('GET', 'lists');
+        return $this->request('GET', 'lists', array('per_page' => 'all'));
     }
 
     // Retrieve all subscribers
     public function getAllSubscribers()
     {
-        return $this->request('GET', 'subscribers');
+        return $this->request('GET', 'subscribers', array('per_page' => 'all'));
     }
 
     // Retrieve all campaigns
     public function getAllCampaigns()
     {
-        return $this->request('GET', 'campaigns');
+        return $this->request('GET', 'campaigns', array('per_page' => 'all'));
     }
 
     // Retrieve all email templates
     public function getAllTemplates()
     {
-        return $this->request('GET', 'templates');
+        return $this->request('GET', 'templates', array('per_page' => 'all'));
     }
 
     // Retrieve all bounce records
     public function getAllBounces()
     {
-        return $this->request('GET', 'bounces');
+        return $this->request('GET', 'bounces', array('per_page' => 'all'));
     }
 
     // Retrieve all import jobs
     public function getAllImport()
     {
-        return $this->request('GET', 'import');
+        return $this->request('GET', 'import', array('per_page' => 'all'));
     }
 }
 
