@@ -69,32 +69,6 @@ Add these lines to your crontab (`crontab -e`) to automate backup and cleanup:
 
 ---
 
-## 🧪 Example Usage
-
-### Backup Script (`ListmonkBackup.php`)
-
-```php
-require_once __DIR__ . '/ListmonkAPI.php';
-$listmonk = new ListmonkAPI();
-$listmonk->runBackup();
-```
-
-### Cleanup Script (`CleanupBackups.php`)
-
-```php
-require_once __DIR__ . '/ListmonkAPI.php';
-
-try {
-    $listmonk = new ListmonkAPI();
-    $listmonk->cleanOldBackups();
-} catch (Exception $e) {
-    error_log("Backup cleanup failed: " . $e->getMessage());
-    echo "Error: " . $e->getMessage();
-}
-```
-
----
-
 ## ✅ Security Best Practices
 
 - Store everything **outside** of public web directories.
