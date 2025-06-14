@@ -80,7 +80,7 @@ Add these lines to your crontab (`crontab -e`) to automate backup and cleanup:
 
 ## 📄 License
 
-MIT License — free for personal or commercial use. Contributions welcome!
+MIT License — free for personal use.
 
 ---
 
